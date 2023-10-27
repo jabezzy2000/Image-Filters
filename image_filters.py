@@ -88,3 +88,29 @@ def sepia(image_matrix):
     return image_matrix
     image_io.write_to_file(image, sepia(image_matrix))
 
+def blur(image_matrix):
+  copied_matrix = deepcopy(image_matrix)
+  neighbors = [(0,1),(1,0),(0,-1),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)] 
+  len_rows = len(image_matrix)-1
+  len_cols = len(image_matrix[0]) -1
+
+  for row in range(len_rows):
+    for col in range(len_cols):
+      current_neighbors = []
+      for x,y in neighbors:
+        newx,newy = row + x, col + y
+        if newx >= 0 or newy >= 0 or newx < len(image_matrix) or newy < len(image_matrix[col]):
+          #within range of matrix
+          current_neighbors.append(image_matrix[newx][newy])
+        
+          avg_r,avg_g,avg_b = 0,0,0
+          length_of_neighbors = len(current_neighbors)
+          for pixel in current_neighbors:
+            avg_r += pixel[0]
+            avg_g += pixel[1]
+            avg_b += pixel[2]
+          avg_r,avg_g,avg_b = avg_r// length_of_neighbors, avg_g // length_of_neighbors,avg_b // length_of_neighbors
+
+          copied_matrix[row][col] = (avg_r,avg_g,avg_b)
+  return copied_matrix
+
